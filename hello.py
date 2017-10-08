@@ -1,5 +1,9 @@
 from urllib.parse import parse_qs as parser
+
+
 bind = "0.0.0.0:8080"
+
+
 def app(environ, start_response):
     """Simplest possible application object"""
     resp = parser(environ['QUERY_STRING'])
