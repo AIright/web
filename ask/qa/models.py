@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 
 """
@@ -17,11 +18,10 @@ likes - список пользователей, поставивших "лай�
 
 class QuestionManager(models.Manager):
     def new(self):
-        from django.db import connection
-        return Question.object.order_by('date')[0:5].get()
+        return self.order_by('-added_at')
 
     def popular(self):
-        return Question.object.order_by('rating')
+        return self.order_by('-rating')
 
 
 class Question(models.Model):
@@ -32,6 +32,10 @@ class Question(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     likes = models.ManyToManyField(User, blank=True, related_name='user_id')
     objects = QuestionManager()
+
+    def get_url(self):
+        return reverse('question', kwargs={'id': self.id})
+
 
 
 """
@@ -48,6 +52,7 @@ class Answer(models.Model):
     added_at = models.DateTimeField(auto_now=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    objects = models.Manager()
 
 
 
