@@ -12,6 +12,8 @@ def test(request, *args, **kwargs):
     return HttpResponse('OK')
 
 
+# return last requests with Question model method 'new()'
+# paginator is used with 10 items on the page
 def last_requests(request):
     page = request.GET.get('page', 1)
     try:
@@ -29,6 +31,8 @@ def last_requests(request):
         raise Http404
 
 
+# return popular reuqests with Question model method 'popular()'
+# paginator is used with 10 items on the page
 def popular_requests(request):
     page = request.GET.get('page', 1)
     try:
@@ -46,6 +50,9 @@ def popular_requests(request):
         raise Http404
 
 
+# Return question page with answers if GET method is used
+# Add question and redirect on question page with that answer if
+# POST method is used
 @csrf_protect
 def one_question(request, question_id):
     question_object = get_object_or_404(Question, id=question_id)
@@ -58,16 +65,24 @@ def one_question(request, question_id):
         })
     elif request.method == 'POST':
         form = AnswerForm(request.POST)
-        print('lol' + form['question'].value())
         if form.is_valid():
             form.save()
             question_object = Question.objects.get(id=form['question'].value())
             url = question_object.get_url()
             return HttpResponseRedirect(url)
+        else:
+            form = AnswerForm(initial={'question': question_id})
+            return render(request, 'html/one_question.html', {
+                'question_object': question_object,
+                'answers': Answer.objects.filter(question_id=question_id),
+                'answer_form': form
+            })
     else:
         raise HttpResponseNotAllowed
 
 
+# Return page with question create page if GET
+# Add question and redirect on the page with that question
 @csrf_protect
 def ask(request):
     if request.method == 'GET':
