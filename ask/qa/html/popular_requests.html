@@ -9,7 +9,7 @@
 {% for question in questions %}
     <div id="{{question.id}}" name="{{question.title}}" style="border: 1px solid black;">
     <h3>{{ question.title }}</h3>
-    <p><a href="http://127.0.0.1:8000/question/{{question.id}}">question link</a></p>
+    <p><a href="{% url 'question' question.id %}">question link</a></p>
     </div>
 {% endfor %}
 <div name="paginator_pages"> </div>
@@ -17,4 +17,3 @@
     <a href="{{paginator.baseurl}}{{i}}">{{i}}/</a>
 {% endfor %}
 </body>
-</html>
