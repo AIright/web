@@ -31,7 +31,6 @@ def login_page(request):
         if user is not None:
             login(request, user)
             return HttpResponseRedirect('/')
-        # SET COOKIE BITCH!
         else:
             return render(request, 'html/login_page.html', {
                 'login_form': LoginForm,
@@ -65,7 +64,6 @@ def signup_page(request):
                     'signup_form': SignupForm,
                     'message': message
                 })
-        # SET COOKIE BITCH!
         else:
             message = 'Invalid login/password/email'
             return render(request, 'html/signup_page.html', {
@@ -80,7 +78,6 @@ def signup_page(request):
 # paginator is used with 10 items on the page
 def last_requests(request):
     page = request.GET.get('page', 1)
-    print(request.user)
     try:
         int(page)
         questions = Question.objects.new()
@@ -137,7 +134,6 @@ def one_question(request, question_id):
             url = question_object.get_url()
             return HttpResponseRedirect(url)
         else:
-            print('fuck')
             form = AnswerForm(initial={'question': question_id})
             return render(request, 'html/one_question.html', {
                 'question_object': question_object,
@@ -159,8 +155,7 @@ def ask(request):
         })
 
     elif request.method == 'POST':
-        form = AskForm(request.POST)
-        form._user = request.user
+        form = AskForm(request.POST, initial={'author': request.user})
         if form.is_valid():
             question = form.save()
             url = question.get_url()
