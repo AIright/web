@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+</head>
+<body>
+    <form class="form-vertical" method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <fieldset>
+        {% for field in login_form %}
+          <div class="control-group
+              {% if field.errors %}has-error{% endif %}">
+              <label class="control-label">{{ field.label }}</label>
+              <div class="controls">
+                    {{ field }}
+              </div>
+          </div>
+        {% endfor %}
+        </fieldset>
+        <p style="color:red;">{{ message }}</p>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+    </form>
+</body>
+</html>

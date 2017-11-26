@@ -10,12 +10,32 @@ question - поле для связи с вопросом
 
 from django import forms
 from qa.models import Question, Answer
+from django.contrib.auth.models import User
 from django.core import validators
 
 
-class AskForm(forms.Form):
-    title = forms.CharField(label='title', max_length=255)
-    text = forms.CharField(label='question', widget=forms.Textarea)
+class SignupForm(forms.Form):
+    username = forms.CharField(label='username', max_length=32)
+    email = forms.EmailField(label='email', required=True)
+    password = forms.CharField(label='password', widget=forms.PasswordInput)
+
+    def save(self, commit=True):
+        user = User.objects.create_user(**self.cleaned_data)
+        user = user.save()
+        return user
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=32, required=True)
+    password = forms.CharField(widget=forms.PasswordInput)
+
+
+class AskForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['title', 'text', 'author']
+        labels = {'author': ''}
+        widgets = {'author': forms.HiddenInput()}
 
     def clean_text(self):
         text = self.cleaned_data['text']
@@ -31,7 +51,9 @@ class AskForm(forms.Form):
 class AnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
-        fields = ['text', 'question']
+        fields = ['text', 'question', 'author']
+        widgets = {'author': forms.HiddenInput()}
+        labels = {'author': ''}
 
     def clean_text(self):
         text = self.cleaned_data['text']

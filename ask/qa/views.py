@@ -3,19 +3,84 @@ from __future__ import unicode_literals
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseNotAllowed, HttpResponseRedirect
 from qa.models import Question, Answer
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
-from qa.forms import AskForm, AnswerForm
+from qa.forms import AskForm, AnswerForm, LoginForm, SignupForm
 from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth import authenticate, login
 
 
 def test(request, *args, **kwargs):
     return HttpResponse('OK')
 
 
-# return last requests with Question model method 'new()'
+# Return login page if request method is GET
+# Authorization as user if POST
+def login_page(request):
+    if request.method == 'GET':
+        return render(request, 'html/login_page.html', {
+            'login_form': LoginForm,
+            'message': ''
+        })
+    elif request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect('/')
+        # SET COOKIE BITCH!
+        else:
+            return render(request, 'html/login_page.html', {
+                'login_form': LoginForm,
+                'message': 'Invalid login/password'
+            })
+    else:
+        raise HttpResponseNotAllowed
+
+
+# Return signup page if request method is GET
+# Create new user, authorize as new user, redirect on the main page
+def signup_page(request):
+    if request.method == 'GET':
+        return render(request, 'html/signup_page.html', {
+            'signup_form': SignupForm,
+            'message': ''
+        })
+    elif request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            try:
+                form.save()
+                user = authenticate(request, username=username, password=password)
+                login(request, user)
+                return HttpResponseRedirect('/')
+            except:
+                message = 'Already in use'
+                return render(request, 'html/signup_page.html', {
+                    'signup_form': SignupForm,
+                    'message': message
+                })
+        # SET COOKIE BITCH!
+        else:
+            message = 'Invalid login/password/email'
+            return render(request, 'html/signup_page.html', {
+                'signup_form': SignupForm,
+                'message': message
+            })
+    else:
+        raise HttpResponseNotAllowed
+
+
+# Return last requests with Question model method 'new()'
 # paginator is used with 10 items on the page
 def last_requests(request):
     page = request.GET.get('page', 1)
+    print(request.user)
     try:
         int(page)
         questions = Question.objects.new()
@@ -31,7 +96,7 @@ def last_requests(request):
         raise Http404
 
 
-# return popular reuqests with Question model method 'popular()'
+# Return popular requests with Question model method 'popular()'
 # paginator is used with 10 items on the page
 def popular_requests(request):
     page = request.GET.get('page', 1)
@@ -57,7 +122,8 @@ def popular_requests(request):
 def one_question(request, question_id):
     question_object = get_object_or_404(Question, id=question_id)
     if request.method == 'GET':
-        form = AnswerForm(initial={'question': question_id})
+        form = AnswerForm(initial={'question': question_id,
+                                   'author': request.user})
         return render(request, 'html/one_question.html', {
             'question_object': question_object,
             'answers': Answer.objects.filter(question_id=question_id),
@@ -71,6 +137,7 @@ def one_question(request, question_id):
             url = question_object.get_url()
             return HttpResponseRedirect(url)
         else:
+            print('fuck')
             form = AnswerForm(initial={'question': question_id})
             return render(request, 'html/one_question.html', {
                 'question_object': question_object,
@@ -86,12 +153,14 @@ def one_question(request, question_id):
 @csrf_protect
 def ask(request):
     if request.method == 'GET':
+        form = AskForm(initial={'author': request.user})
         return render(request, 'html/ask_form.html', {
-            'ask_form': AskForm
+            'ask_form': form
         })
 
     elif request.method == 'POST':
         form = AskForm(request.POST)
+        form._user = request.user
         if form.is_valid():
             question = form.save()
             url = question.get_url()
