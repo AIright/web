@@ -19,7 +19,7 @@ class SignupForm(forms.Form):
     email = forms.EmailField(label='email', required=True)
     password = forms.CharField(label='password', widget=forms.PasswordInput)
 
-    def save(self, commit=True):
+    def save(self):
         user = User.objects.create_user(**self.cleaned_data)
         user = user.save()
         return user
@@ -33,9 +33,8 @@ class LoginForm(forms.Form):
 class AskForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = ['title', 'text', 'author']
-        labels = {'author': ''}
-        widgets = {'author': forms.HiddenInput()}
+        fields = ['title', 'text']
+        _author = ''
 
     def clean_text(self):
         text = self.cleaned_data['text']
@@ -43,6 +42,7 @@ class AskForm(forms.ModelForm):
         return text
 
     def save(self):
+        self.cleaned_data['author'] = self._author
         question = Question(**self.cleaned_data)
         question.save()
         return question
@@ -51,9 +51,8 @@ class AskForm(forms.ModelForm):
 class AnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
-        fields = ['text', 'question', 'author']
-        widgets = {'author': forms.HiddenInput()}
-        labels = {'author': ''}
+        fields = ['text', 'question']
+        _author = ''
 
     def clean_text(self):
         text = self.cleaned_data['text']
@@ -61,6 +60,7 @@ class AnswerForm(forms.ModelForm):
         return text
 
     def save(self):
+        self.cleaned_data['author'] = self._author
         answer = Answer(**self.cleaned_data)
         answer.save()
         return answer

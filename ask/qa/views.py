@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseNotAllowed, HttpResponseRedirect
 from qa.models import Question, Answer
-from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from qa.forms import AskForm, AnswerForm, LoginForm, SignupForm
 from django.views.decorators.csrf import csrf_protect
@@ -119,26 +118,24 @@ def popular_requests(request):
 def one_question(request, question_id):
     question_object = get_object_or_404(Question, id=question_id)
     if request.method == 'GET':
-        form = AnswerForm(initial={'question': question_id,
-                                   'author': request.user})
         return render(request, 'html/one_question.html', {
             'question_object': question_object,
             'answers': Answer.objects.filter(question_id=question_id),
-            'answer_form': form
+            'answer_form': AnswerForm(initial={'question': question_id})
         })
     elif request.method == 'POST':
         form = AnswerForm(request.POST)
         if form.is_valid():
+            form._author = request.user
             form.save()
             question_object = Question.objects.get(id=form['question'].value())
             url = question_object.get_url()
             return HttpResponseRedirect(url)
         else:
-            form = AnswerForm(initial={'question': question_id})
             return render(request, 'html/one_question.html', {
                 'question_object': question_object,
                 'answers': Answer.objects.filter(question_id=question_id),
-                'answer_form': form
+                'answer_form': AnswerForm(initial={'question': question_id})
             })
     else:
         raise HttpResponseNotAllowed
@@ -149,18 +146,16 @@ def one_question(request, question_id):
 @csrf_protect
 def ask(request):
     if request.method == 'GET':
-        form = AskForm(initial={'author': request.user})
         return render(request, 'html/ask_form.html', {
-            'ask_form': form
+            'ask_form': AskForm
         })
 
     elif request.method == 'POST':
-        form = AskForm(request.POST, initial={'author': request.user})
+        form = AskForm(request.POST)
         if form.is_valid():
+            form._author = request.user
             question = form.save()
             url = question.get_url()
             return HttpResponseRedirect(url)
     else:
         raise HttpResponseNotAllowed
-    
-    
