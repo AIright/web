@@ -11,7 +11,6 @@ question - поле для связи с вопросом
 from django import forms
 from qa.models import Question, Answer
 from django.contrib.auth.models import User
-from django.core import validators
 
 
 class SignupForm(forms.Form):
