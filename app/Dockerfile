@@ -5,4 +5,4 @@ WORKDIR /opt/app
 COPY * /opt/app/
 
 RUN pip install -r requirements.txt
-CMD ["gunicorn","blog.wsgi"]
+CMD /bin/bash
