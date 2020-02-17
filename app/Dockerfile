@@ -6,8 +6,7 @@ COPY ./blog /opt/app/
 COPY manage.py /opt/app/
 COPY requirements.txt /opt/app/
 
-RUN apk add --no-cache \
-    dumb-init \
-    mariadb-client \
+RUN apk add py-mysqldb \
     && pip install -r requirements.txt
 CMD ["gunicorn","blog.wsgi"]
+
