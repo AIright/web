@@ -6,4 +6,4 @@ COPY * /opt/app/
 
 RUN pip install -r requirements.txt
 
-CMD ['gunicorn', 'blog.wsgi']
+CMD gunicorn blog.wsgi
