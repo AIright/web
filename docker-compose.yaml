@@ -18,6 +18,8 @@ services:
   db:
     image: mysql
     container_name: mysql
+    env_file:
+      - .ENV_LOCAL
     volumes:
       - db-data:/var/lib/mysql/data
 
