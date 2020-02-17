@@ -1,0 +1,36 @@
+version: 1.0
+services:
+  blog:
+    build: ./app
+    container_name: blog
+    depends_on:
+      - db
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        delay: 10s
+    expose:
+      - 8080
+
+  web:
+    image: "nginx:alpine"
+    container_name: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./etc/nginx.conf:/etc/nginx/sites-enabled/test.conf
+
+  db:
+    image: mysql
+    volumes:
+      - db-data:/var/lib/mysql/data
+
+volumes:
+  db-data:
+
