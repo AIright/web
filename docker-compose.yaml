@@ -13,7 +13,7 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./etc/nginx.conf:/etc/nginx/sites-enabled/test.conf
+      - ./etc/nginx.conf:/etc/nginx/conf.d/blog.conf
 
   db:
     image: mysql
