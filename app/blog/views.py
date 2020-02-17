@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseNotAllowed, HttpResponseRedirect
-from qa.models import Question, Answer
+from blog.models import Question, Answer
 from django.core.paginator import Paginator
-from qa.forms import AskForm, AnswerForm, LoginForm, SignupForm
+from blog.forms import AskForm, AnswerForm, LoginForm, SignupForm
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import authenticate, login
 
