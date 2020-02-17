@@ -6,5 +6,8 @@ COPY ./blog /opt/app/
 COPY manage.py /opt/app/
 COPY requirements.txt /opt/app/
 
-RUN pip install -r requirements.txt
+RUN apk add --no-cache \
+    dumb-init \
+    mariadb-client \
+    && pip install -r requirements.txt
 CMD ["gunicorn","blog.wsgi"]
