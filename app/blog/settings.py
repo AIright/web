@@ -14,7 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-os.path.join(BASE_DIR, '../blog')
+BLOG_DIR = os.path.join(BASE_DIR, 'blog')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -61,7 +61,7 @@ ROOT_URLCONF = 'blog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR+'/blog'],
+        'DIRS': [BLOG_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
