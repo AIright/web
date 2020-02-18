@@ -84,7 +84,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'test_db', #os.path.join('/var/lib/mysql/test_db', 'test_db'),
-        'HOST': '127.0.0.1',
+        'HOST': 'mysql',
         'USERNAME': 'alright',
         'PASSWORD': '123',
 

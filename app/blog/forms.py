@@ -9,7 +9,7 @@ question - поле для связи с вопросом
 """
 
 from django import forms
-from blog.models import Question, Answer
+from .models import Publication, Comment
 from django.contrib.auth.models import User
 
 
@@ -29,9 +29,9 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
 
 
-class AskForm(forms.ModelForm):
+class PublicationForm(forms.ModelForm):
     class Meta:
-        model = Question
+        model = Publication
         fields = ['title', 'text']
         _author = ''
 
@@ -42,14 +42,14 @@ class AskForm(forms.ModelForm):
 
     def save(self):
         self.cleaned_data['author'] = self._author
-        question = Question(**self.cleaned_data)
+        question = Publication(**self.cleaned_data)
         question.save()
         return question
 
 
-class AnswerForm(forms.ModelForm):
+class CommentForm(forms.ModelForm):
     class Meta:
-        model = Answer
+        model = Comment
         fields = ['text', 'question']
         _author = ''
 
@@ -60,7 +60,7 @@ class AnswerForm(forms.ModelForm):
 
     def save(self):
         self.cleaned_data['author'] = self._author
-        answer = Answer(**self.cleaned_data)
+        answer = Comment(**self.cleaned_data)
         answer.save()
         return answer
 

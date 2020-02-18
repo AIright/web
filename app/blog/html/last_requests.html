@@ -6,10 +6,10 @@
 </head>
 <body>
 
-{% for question in questions %}
-    <div id="{{question.id}}" name="{{question.title}}" style="border: 1px solid black;">
-    <h3>{{ question.title }}</h3>
-    <p><a href="{% url 'question' question.id %}">question link</a></p>
+{% for publication in publications %}
+    <div id="{{publication.id}}" name="{{publication.title}}" style="border: 1px solid black;">
+    <h3>{{ publication.title }}</h3>
+    <p><a href="{% url 'publication' publication.id %}">publication link</a></p>
     </div>
 {% endfor %}
 <div name="paginator_pages"> </div>

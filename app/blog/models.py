@@ -4,18 +4,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 
-"""
-Question - вопрос
-title - заголовок вопроса
-text - полный текст вопроса
-added_at - дата добавления вопроса
-rating - рейтинг вопроса (число)
-author - автор вопроса
-likes - список пользователей, поставивших "лайк"
-"""
-
-
-class QuestionManager(models.Manager):
+class PublicationManager(models.Manager):
     def new(self):
         return self.order_by('-added_at')
 
@@ -23,14 +12,23 @@ class QuestionManager(models.Manager):
         return self.order_by('-rating')
 
 
-class Question(models.Model):
+class Publication(models.Model):
+    """
+    Publication:
+    title - title content
+    text - content of publication
+    added_at - last update date
+    rating - number of users who rated post
+    author - user who published
+    likes - users who rated
+    """
     title = models.CharField(max_length=255)
     text = models.TextField(blank=True)
     added_at = models.DateTimeField(blank=True, auto_now_add=True)
     rating = models.IntegerField(default=0)
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     likes = models.ManyToManyField(User, blank=True, related_name='user_id')
-    objects = QuestionManager()
+    objects = PublicationManager()
 
     def __str__(self):
         return str(self.id)
@@ -39,27 +37,16 @@ class Question(models.Model):
         return reverse('question', kwargs={'question_id': self.id})
 
 
-
-
-
-"""
-Answer - ответ
-text - текст ответа
-added_at - дата добавления ответа
-question - вопрос, к которому относится ответ
-author - автор ответа
-"""
-
-
-class Answer(models.Model):
+class Comment(models.Model):
+    """
+    Answer:
+    text - content
+    added_at - last update
+    question - related question
+    author - user who posted the answer
+    """
     text = models.TextField()
     added_at = models.DateTimeField(auto_now=True)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Publication, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     objects = models.Manager()
-
-
-
-
-
-

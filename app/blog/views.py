@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, Http404, HttpResponseNotAllowed, HttpResponseRedirect
-from blog.models import Question, Answer
+from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseRedirect
+from .models import Publication, Comment
 from django.core.paginator import Paginator
-from blog.forms import AskForm, AnswerForm, LoginForm, SignupForm
+from .forms import PublicationForm, CommentForm, LoginForm, SignupForm
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import authenticate, login
 
@@ -26,6 +26,9 @@ def login_page(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
+        else:
+            raise HttpResponseBadRequest
+
         if user is not None:
             login(request, user)
             return HttpResponseRedirect('/')
@@ -72,89 +75,89 @@ def signup_page(request):
         raise HttpResponseNotAllowed
 
 
-# Return last requests with Question model method 'new()'
+# Return last requests with Publication model method 'new()'
 # paginator is used with 10 items on the page
 def last_requests(request):
     page = request.GET.get('page', 1)
     try:
         int(page)
-        questions = Question.objects.new()
+        publications = Publication.objects.new()
         limit = request.GET.get('limit', 10)
-        paginator = Paginator(questions, limit)
+        paginator = Paginator(publications, limit)
         paginator.baseurl = '?page='
         page = paginator.page(page)
         return render(request, 'html/last_requests.html', {
-            'questions': page.object_list,
+            'publications': page.object_list,
             'paginator': paginator, 'page': page,
         })
     except:
         raise Http404
 
 
-# Return popular requests with Question model method 'popular()'
+# Return popular requests with Publication model method 'popular()'
 # paginator is used with 10 items on the page
 def popular_requests(request):
     page = request.GET.get('page', 1)
     try:
         int(page)
-        questions = Question.objects.popular()
+        publications = Publication.objects.popular()
         limit = request.GET.get('limit', 10)
-        paginator = Paginator(questions, limit)
+        paginator = Paginator(publications, limit)
         paginator.baseurl = '?page='
         page = paginator.page(page)
         return render(request, 'html/popular_requests.html', {
-            'questions': page.object_list,
+            'publications': page.object_list,
             'paginator': paginator, 'page': page,
         })                                                            
     except:
         raise Http404
 
 
-# Return question page with answers if GET method is used
-# Add question and redirect on question page with that answer if
+# Return publications page with comments if GET method is used
+# Add publication and redirect on publication page with that comment if
 # POST method is used
 @csrf_protect
-def one_question(request, question_id):
-    question_object = get_object_or_404(Question, id=question_id)
+def one_publication(request, publication_id):
+    publication_object = get_object_or_404(Publication, id=publication_id)
     if request.method == 'GET':
-        return render(request, 'html/one_question.html', {
-            'question_object': question_object,
-            'answers': Answer.objects.filter(question_id=question_id),
-            'answer_form': AnswerForm(initial={'question': question_id})
+        return render(request, 'html/one_publication.html', {
+            'publication_object': publication_object,
+            'comments': Comment.objects.filter(publication_id=publication_id),
+            'comment_form': CommentForm(initial={'publication': publication_id})
         })
     elif request.method == 'POST':
-        form = AnswerForm(request.POST)
+        form = CommentForm(request.POST)
         if form.is_valid():
             form._author = request.user
             form.save()
-            question_object = Question.objects.get(id=form['question'].value())
-            url = question_object.get_url()
+            publication_object = Publication.objects.get(id=form['publication'].value())
+            url = publication_object.get_url()
             return HttpResponseRedirect(url)
         else:
-            return render(request, 'html/one_question.html', {
-                'question_object': question_object,
-                'answers': Answer.objects.filter(question_id=question_id),
-                'answer_form': AnswerForm(initial={'question': question_id})
+            return render(request, 'html/one_publication.html', {
+                'publication_object': publication_object,
+                'comments': Comment.objects.filter(publication_id=publication_id),
+                'comment_form': CommentForm(initial={'publication': publication_id})
             })
     else:
         raise HttpResponseNotAllowed
 
 
-# Return page with question create page if GET
-# Add question and redirect on the page with that question
+# Return page with publication create page if GET
+# Add publication and redirect on the page with that publication
 @csrf_protect
-def ask(request):
+def publish(request):
     if request.method == 'GET':
-        return render(request, 'html/ask_form.html', {
-            'ask_form': AskForm
+        return render(request, 'html/comment_form.html', {
+            'comment_form': PublicationForm
         })
 
     elif request.method == 'POST':
-        form = AskForm(request.POST)
+        form = PublicationForm(request.POST)
         if form.is_valid():
             form._author = request.user
-            question = form.save()
-            url = question.get_url()
+            publication = form.save()
+            url = publication.get_url()
             return HttpResponseRedirect(url)
     else:
         raise HttpResponseNotAllowed

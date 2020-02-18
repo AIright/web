@@ -6,18 +6,18 @@
 </head>
 <body>
     <div style="border: 2px solid black; margin: 25px 50px 75px 100px;">
-      <h1>{{question_object.title}}</h1>
-      <p>Author: {{question_object.author}}</p>
-      <p>{{question_object.text}}</p>
+      <h1>{{publication_object.title}}</h1>
+      <p>Author: {{publication_object.author}}</p>
+      <p>{{publication_object.text}}</p>
     </div>
     <p></p>
-    {% for answer in answers %}
-      {% include 'html/answer.html' %}
+    {% for comment in comments %}
+      {% include 'html/comment.html' %}
     {% endfor %}
-    <form class="form-vertical" method="post" action="{% url 'question' question_object.id %}">
+    <form class="form-vertical" method="post" action="{% url 'publication' publication_object.id %}">
         {% csrf_token %}
         <fieldset>
-        {% for field in answer_form %}
+        {% for field in comment_form %}
           <div class="control-group
               {% if field.errors %}has-error{% endif %}">
               <label class="control-label">{{ field.label }}</label>
@@ -28,9 +28,9 @@
         {% endfor %}
         </fieldset>
         <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Answer</button>
+          <button type="submit" class="btn btn-primary">Comment</button>
         </div>
     </form>
-    <p><a href="/">The newest questions</a></p>
+    <p><a href="/">The newest publications</a></p>
 </body>
 </html>
