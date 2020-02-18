@@ -16,7 +16,7 @@ def test(request, *args, **kwargs):
 # Authorization as user if POST
 def login_page(request):
     if request.method == 'GET':
-        return render(request, 'html/login_page.html', {
+        return render(request, 'login_page.html', {
             'login_form': LoginForm,
             'message': ''
         })
@@ -33,7 +33,7 @@ def login_page(request):
             login(request, user)
             return HttpResponseRedirect('/')
         else:
-            return render(request, 'html/login_page.html', {
+            return render(request, 'login_page.html', {
                 'login_form': LoginForm,
                 'message': 'Invalid login/password'
             })
@@ -45,7 +45,7 @@ def login_page(request):
 # Create new user, authorize as new user, redirect on the main page
 def signup_page(request):
     if request.method == 'GET':
-        return render(request, 'html/signup_page.html', {
+        return render(request, 'signup_page.html', {
             'signup_form': SignupForm,
             'message': ''
         })
@@ -61,13 +61,13 @@ def signup_page(request):
                 return HttpResponseRedirect('/')
             except:
                 message = 'Already in use'
-                return render(request, 'html/signup_page.html', {
+                return render(request, 'signup_page.html', {
                     'signup_form': SignupForm,
                     'message': message
                 })
         else:
             message = 'Invalid login/password/email'
-            return render(request, 'html/signup_page.html', {
+            return render(request, 'signup_page.html', {
                 'signup_form': SignupForm,
                 'message': message
             })
@@ -86,7 +86,7 @@ def last_requests(request):
         paginator = Paginator(publications, limit)
         paginator.baseurl = '?page='
         page = paginator.page(page)
-        return render(request, 'html/last_requests.html', {
+        return render(request, 'last_requests.html', {
             'publications': page.object_list,
             'paginator': paginator, 'page': page,
         })
@@ -99,13 +99,13 @@ def last_requests(request):
 def popular_requests(request):
     page = request.GET.get('page', 1)
     try:
-        int(page)
+        page = int(page)
         publications = Publication.objects.popular()
         limit = request.GET.get('limit', 10)
         paginator = Paginator(publications, limit)
         paginator.baseurl = '?page='
         page = paginator.page(page)
-        return render(request, 'html/popular_requests.html', {
+        return render(request, 'popular_requests.html', {
             'publications': page.object_list,
             'paginator': paginator, 'page': page,
         })                                                            
@@ -120,7 +120,7 @@ def popular_requests(request):
 def one_publication(request, publication_id):
     publication_object = get_object_or_404(Publication, id=publication_id)
     if request.method == 'GET':
-        return render(request, 'html/one_publication.html', {
+        return render(request, 'one_publication.html', {
             'publication_object': publication_object,
             'comments': Comment.objects.filter(publication_id=publication_id),
             'comment_form': CommentForm(initial={'publication': publication_id})
@@ -134,7 +134,7 @@ def one_publication(request, publication_id):
             url = publication_object.get_url()
             return HttpResponseRedirect(url)
         else:
-            return render(request, 'html/one_publication.html', {
+            return render(request, 'one_publication.html', {
                 'publication_object': publication_object,
                 'comments': Comment.objects.filter(publication_id=publication_id),
                 'comment_form': CommentForm(initial={'publication': publication_id})
@@ -148,7 +148,7 @@ def one_publication(request, publication_id):
 @csrf_protect
 def publish(request):
     if request.method == 'GET':
-        return render(request, 'html/comment_form.html', {
+        return render(request, 'comment_form.html', {
             'comment_form': PublicationForm
         })
 
