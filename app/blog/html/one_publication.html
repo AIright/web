@@ -17,10 +17,15 @@
 <form class="form-vertical" method="post" action="{% url 'publication' publication_object.id %}">
     {% csrf_token %}
     <fieldset>
-        <input name="publication" type="hidden" value={{ comment_form.publication }}/>
-        <label>
-            <input name="text"/>
-        </label>
+        <div style="display: none;">
+            <input type="hidden" name="publication" value={{ publication_object.id }}>
+        </div>
+        <div>
+            <label for="commentText" class="control-label">Write your comment: </label>
+            <textarea id="commentText" name="text" cols="60" rows="5">
+                Put your comment here!
+            </textarea>
+        </div>
     </fieldset>
     <div class="form-actions">
         <button type="submit" class="btn btn-primary">Comment</button>

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseRedirect
 from .models import Publication, Comment
@@ -6,6 +7,9 @@ from django.core.paginator import Paginator
 from .forms import PublicationForm, CommentForm, LoginForm, SignupForm
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import authenticate, login
+
+
+logger = logging.getLogger(__name__)
 
 
 def test(request, *args, **kwargs):
@@ -130,7 +134,7 @@ def one_publication(request, publication_id):
         if form.is_valid():
             form._author = request.user
             form.save()
-            publication_object = Publication.objects.get(id=form['publication'].value())
+            publication_object = Publication.objects.get(id=publication_id)
             url = publication_object.get_url()
             return HttpResponseRedirect(url)
         else:
