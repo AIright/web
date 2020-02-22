@@ -31,7 +31,7 @@ def login_page(request):
 
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/popular')
         else:
             return render(request, 'login_page.html', {
                 'login_form': LoginForm,
@@ -58,7 +58,7 @@ def signup_page(request):
                 form.save()
                 user = authenticate(request, username=username, password=password)
                 login(request, user)
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect('/login')
             except:
                 message = 'Already in use'
                 return render(request, 'signup_page.html', {
@@ -148,8 +148,8 @@ def one_publication(request, publication_id):
 @csrf_protect
 def publish(request):
     if request.method == 'GET':
-        return render(request, 'comment_form.html', {
-            'comment_form': PublicationForm
+        return render(request, 'create_publication_form.html', {
+            'publication_form': PublicationForm
         })
 
     elif request.method == 'POST':

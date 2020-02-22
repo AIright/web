@@ -22,7 +22,7 @@ urlpatterns = (
     url(r'^$', views.last_requests, name='last_requests'),
     url(r'^login/', views.login_page, name='login'),
     url(r'^signup/', views.signup_page, name='signup'),
-    url(r'^post/(?P<question_id>[0-9]+)', views.one_publication, name='question'),
+    url(r'^post/(?P<publication_id>[0-9]+)', views.one_publication, name='publication'),
     url(r'^publish/', views.publish),
     url(r'^popular/', views.popular_requests),
     url(r'^new/', views.test, name='new')

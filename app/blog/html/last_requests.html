@@ -8,11 +8,9 @@
 
 {% for publication in publications %}
     <div id="{{publication.id}}" name="{{publication.title}}" style="border: 1px solid black;">
-    <h3>{{ publication.title }}</h3>
-    <p><a href="{% url 'publication' publication.id %}">publication link</a></p>
+    <h3><a href="{% url 'publication' publication.id %}">{{ publication.title }}</a></h3>
     </div>
 {% endfor %}
-<div name="paginator_pages"> </div>
 {% for i in paginator.page_range %}
     <a href="{{paginator.baseurl}}{{i}}">{{i}}/</a>
 {% endfor %}

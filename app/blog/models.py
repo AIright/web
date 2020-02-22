@@ -34,7 +34,7 @@ class Publication(models.Model):
         return str(self.id)
 
     def get_url(self):
-        return reverse('question', kwargs={'question_id': self.id})
+        return reverse('publication', kwargs={'publication_id': self.id})
 
 
 class Comment(models.Model):
@@ -42,11 +42,11 @@ class Comment(models.Model):
     Answer:
     text - content
     added_at - last update
-    question - related question
+    publication - related publication
     author - user who posted the answer
     """
     text = models.TextField()
     added_at = models.DateTimeField(auto_now=True)
-    question = models.ForeignKey(Publication, on_delete=models.CASCADE)
+    publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     objects = models.Manager()

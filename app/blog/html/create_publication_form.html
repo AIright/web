@@ -5,14 +5,14 @@
     <title>Create your publication</title>
 </head>
 <body>
-    <h1>Create your publication</h1>
-    {% for e in comment_form.non_field_errors %}
+    <h3>Create your publication</h3>
+    {% for e in publication_form.non_field_errors %}
       <div class="alert alert-danger">{{ e }}</div>
     {% endfor %}
     <form class="form-vertical" method="post" action="/publish/">
         {% csrf_token %}
         <fieldset>
-        {% for field in comment_form %}
+        {% for field in publication_form %}
           <div class="control-group
               {% if field.errors %}has-error{% endif %}">
               <label class="control-label">{{ field.label }}</label>

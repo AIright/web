@@ -5,32 +5,27 @@
     <title>Q&A</title>
 </head>
 <body>
-    <div style="border: 2px solid black; margin: 25px 50px 75px 100px;">
-      <h1>{{publication_object.title}}</h1>
-      <p>Author: {{publication_object.author}}</p>
-      <p>{{publication_object.text}}</p>
+<div style="border: 2px solid black; margin: 25px 50px 75px 100px;">
+    <h4>{{ publication_object.title }}</h4>
+    <p>Author: {{ publication_object.author }}</p>
+    <p>{{ publication_object.text }}</p>
+</div>
+<p></p>
+{% for comment in comments %}
+    {% include 'comment.html' %}
+{% endfor %}
+<form class="form-vertical" method="post" action="{% url 'publication' publication_object.id %}">
+    {% csrf_token %}
+    <fieldset>
+        <input name="publication" type="hidden" value={{ comment_form.publication }}/>
+        <label>
+            <input name="text"/>
+        </label>
+    </fieldset>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Comment</button>
     </div>
-    <p></p>
-    {% for comment in comments %}
-      {% include 'html/comment.html' %}
-    {% endfor %}
-    <form class="form-vertical" method="post" action="{% url 'publication' publication_object.id %}">
-        {% csrf_token %}
-        <fieldset>
-        {% for field in comment_form %}
-          <div class="control-group
-              {% if field.errors %}has-error{% endif %}">
-              <label class="control-label">{{ field.label }}</label>
-              <div class="controls">
-                    {{ field }}
-              </div>
-          </div>
-        {% endfor %}
-        </fieldset>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Comment</button>
-        </div>
-    </form>
-    <p><a href="/">The newest publications</a></p>
+</form>
+<p><a href="/">The newest publications</a></p>
 </body>
 </html>

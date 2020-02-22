@@ -1,13 +1,3 @@
-"""
-AskForm - форма добавления вопроса
-title - поле заголовка
-text - поле текста вопроса
-
-AnswerForm - форма добавления ответа
-text - поле текста ответа
-question - поле для связи с вопросом
-"""
-
 from django import forms
 from .models import Publication, Comment
 from django.contrib.auth.models import User
@@ -42,15 +32,15 @@ class PublicationForm(forms.ModelForm):
 
     def save(self):
         self.cleaned_data['author'] = self._author
-        question = Publication(**self.cleaned_data)
-        question.save()
-        return question
+        publication = Publication(**self.cleaned_data)
+        publication.save()
+        return publication
 
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['text', 'question']
+        fields = ['text', 'publication']
         _author = ''
 
     def clean_text(self):
