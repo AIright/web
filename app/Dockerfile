@@ -1,4 +1,5 @@
-FROM python:3.8.1-alpine
+# FROM python:3.8.1-alpine
+FROM blog_base
 
 WORKDIR /opt/app
 
