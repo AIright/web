@@ -83,9 +83,9 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test_db', #os.path.join('/var/lib/mysql/test_db', 'test_db'),
+        'NAME': os.getenv('MYSQL_DATABASE'),
         'HOST': 'mysql',
-        'USERNAME': os.getenv('MYSQL_LOGIN'),
+        'USERNAME': os.getenv('MYSQL_USER'),
         'PASSWORD': os.getenv('MYSQL_PASSWORD'),
 
     }
