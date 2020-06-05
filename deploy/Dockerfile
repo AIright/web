@@ -1,11 +1,9 @@
 FROM python:3.8.1-alpine
 
-WORKDIR /opt/app
-
-COPY ./blog /opt/app/blog
-COPY manage.py /opt/app/
-COPY requirements.txt /opt/app/
+COPY requirements.txt /tmp
 
 RUN apk add --no-cache mariadb-dev build-base \
-    && pip install -r requirements.txt
-CMD ["gunicorn","--bind",":8000","blog.wsgi"]
+    && pip install -r /tmp/requirements.txt \
+    && rm /tmp/requirements.txt
+
+CMD ["/bin/bash"]

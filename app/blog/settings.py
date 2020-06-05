@@ -20,7 +20,7 @@ BLOG_DIR = os.path.join(BASE_DIR, 'blog')
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%ec@(*t*h9v!=qzw57z!5k(_o-v3wn)n807vx$6h4*8+iclca9'
+SECRET_KEY = os.getenv('DJANGO_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -85,8 +85,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'test_db', #os.path.join('/var/lib/mysql/test_db', 'test_db'),
         'HOST': 'mysql',
-        'USERNAME': 'alright',
-        'PASSWORD': '123',
+        'USERNAME': os.getenv('MYSQL_LOGIN'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD'),
 
     }
 }
