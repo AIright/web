@@ -10,6 +10,9 @@ cd $WORKDIR
 git checkout master
 git pull
 git fetch origin
+if [ $BRANCH != 'master' ]; then
+  git branch -D $BRANCH
+fi
 git checkout --track origin/$BRANCH
 docker build -t blog_base:latest ./deploy
 docker-compose up -d
