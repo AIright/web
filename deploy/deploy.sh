@@ -7,6 +7,8 @@ WORKDIR=/srv/django/web
 
 cd $WORKDIR
 
+git checkout master
+git pull
 git fetch origin
 git checkout --track origin/$BRANCH
 docker build -t blog_base:latest ./deploy
