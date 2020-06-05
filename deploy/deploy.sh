@@ -7,11 +7,9 @@ WORKDIR=/srv/web
 
 cd $WORKDIR
 
-rm -r *
-
-#git reset --hard HEAD~
-git clone git@github.com:AIright/web.git -b $BRANCH
-ls -l
+git reset --hard HEAD~
+git checkout $BRANCH
+git pull git@github.com:AIright/web.git -b $BRANCH
 docker build -t blog_base:latest ./deploy
 docker-compose up -d
 
