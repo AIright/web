@@ -3,14 +3,16 @@ if [ -z $BRANCH ]; then
   BRANCH=develop
 fi
 
-WORKDIR=/opt/web
+WORKDIR=/srv/web
 
-mkdir -p $WORKDIR && cd $WORKDIR
+cd $WORKDIR
 
-git reset --hard HEAD~
+rm -r *
+
+#git reset --hard HEAD~
 git clone git@github.com:AIright/web.git -b $BRANCH
 
-docker build -t blog_base ./deploy
+docker build -t blog_base -f ./deploy/Dockerfile
 
 docker-compose up -d
 
