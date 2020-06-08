@@ -3,6 +3,11 @@ services:
   blog:
     build: ./app
     container_name: blog
+    environment:
+      - DJANGO_SECRET="${DJANGO_SECRET}"
+      - MYSQL_DATABASE="${MYSQL_DATABASE}"
+      - MYSQL_USER="${MYSQL_USER}"
+      - MYSQL_PASSWORD="${MYSQL_PASSWORD}"
     expose:
       - 8000
 
@@ -18,8 +23,11 @@ services:
   db:
     image: mysql
     container_name: mysql
-    env_file:
-      - .ENV_LOCAL
+    environment:
+      - MYSQL_DATABASE="${MYSQL_DATABASE}"
+      - MYSQL_USER="${MYSQL_USER}"
+      - MYSQL_PASSWORD="${MYSQL_PASSWORD}"
+      - MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}"
     volumes:
       - db-data:/var/lib/mysql
 
