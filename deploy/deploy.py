@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 import json
-import os
+from subprocess import check_call
 
 
 # Read env file
 with open('deploy/.env') as f:
     env = json.load(f)  # type: dict
 
-# Set environment variables
-for k, v in env.items():
-    os.environ[k] = v
-
 # Deploy
-os.system('docker-compose build')
-os.system('docker-compose up -d')
-os.system('docker ps -a')
+check_call('docker-compose down', shell=True, env=env)
+check_call('docker-compose build', shell=True, env=env)
+check_call('docker-compose up -d', shell=True, env=env)
+check_call('docker ps -a', shell=True)
