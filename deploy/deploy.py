@@ -1,10 +1,10 @@
-#!/usr/env python3
+#!/usr/bin/env python3
 import json
 import os
 
 
 # Read env file
-with open('.env') as f:
+with open('deploy/.env') as f:
     env = json.load(f)  # type: dict
 
 # Set environment variables
