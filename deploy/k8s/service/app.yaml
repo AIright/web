@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog
+spec:
+  selector:
+    matchLabels:
+      run: blog
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: blog
+    spec:
+      containers:
+        - name: blog
+          image: blog
+          environment:
+            - DJANGO_SECRET="${DJANGO_SECRET}"
+            - MYSQL_DATABASE="${MYSQL_DATABASE}"
+            - MYSQL_USER="${MYSQL_USER}"
+            - MYSQL_PASSWORD="${MYSQL_PASSWORD}"
+          build: ./app
+          expose:
+            - 8000
+
+        - name: nginx
+          image: nginx
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          volumes:
+            - ./etc/nginx.conf:/etc/nginx/conf.d/blog.conf
+
+        - name: db
+          image: mysql
+          container_name: mysql
+          environment:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-pass
+                  key: password
+            - MYSQL_DATABASE="${MYSQL_DATABASE}"
+            - MYSQL_USER="${MYSQL_USER}"
+            - MYSQL_PASSWORD="${MYSQL_PASSWORD}"
+          ports:
+            - 3306
+          volumes:
+            - db-data:/var/lib/mysql
