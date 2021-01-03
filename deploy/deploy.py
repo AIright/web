@@ -14,3 +14,6 @@ check_call('docker-compose up -d', shell=True, env=env)
 check_call('docker ps -a', shell=True)
 
 # Don't forget to create user and grant them permissions manually
+# Then make migrations:
+# ./manage.py makemigrations blog
+# ./manage.py migrate
