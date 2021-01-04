@@ -1,0 +1,19 @@
+{% load static %}
+<html lang="en">
+<head>
+    <title>Random Blog</title>
+    <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+</head>
+<body>
+<div class="page-header">
+    <h1><a href="/">Random Blog</a></h1>
+</div>
+<div class="page-header">
+    <h3><a href="/publish">Create new publication</a></h3>
+</div>
+<div class="content">
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>

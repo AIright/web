@@ -1,18 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Newest</title>
-</head>
-<body>
-
-{% for publication in publications %}
-    <div id="{{publication.id}}" name="{{publication.title}}" style="border: 1px solid black;">
-    <h3><a href="{% url 'publication' publication.id %}">{{ publication.title }}</a></h3>
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    {% for publication in publications %}
+    <div id="{{publication.id}}" name="{{publication.title}}"
+         style="margin-top: 5px; margin-bottom: 5px;">
+        <h3><a href="{% url 'publication' publication.id %}">{{ publication.title }}</a></h3>
     </div>
-{% endfor %}
-{% for i in paginator.page_range %}
-    <a href="{{paginator.baseurl}}{{i}}">{{i}}/</a>
-{% endfor %}
-</body>
-</html>
+    {% endfor %}
+</div>
+<div>
+    {% for i in paginator.page_range %}
+    <p>
+        <a href="{{paginator.baseurl}}{{i}}">{{i}}/</a>
+    </p>
+    {% endfor %}
+</div>
+{% endblock %}

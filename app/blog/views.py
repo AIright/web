@@ -84,7 +84,6 @@ def signup_page(request):
 def last_requests(request):
     page = request.GET.get('page', 1)
     try:
-        int(page)
         publications = Publication.objects.new()
         limit = request.GET.get('limit', 10)
         paginator = Paginator(publications, limit)
@@ -94,7 +93,8 @@ def last_requests(request):
             'publications': page.object_list,
             'paginator': paginator, 'page': page,
         })
-    except:
+    except Exception as ex:
+        logger.error(ex)
         raise Http404
 
 
@@ -103,7 +103,6 @@ def last_requests(request):
 def popular_requests(request):
     page = request.GET.get('page', 1)
     try:
-        page = int(page)
         publications = Publication.objects.popular()
         limit = request.GET.get('limit', 10)
         paginator = Paginator(publications, limit)
@@ -112,8 +111,9 @@ def popular_requests(request):
         return render(request, 'popular_requests.html', {
             'publications': page.object_list,
             'paginator': paginator, 'page': page,
-        })                                                            
-    except:
+        })
+    except Exception as ex:
+        logger.error(ex)
         raise Http404
 
 
